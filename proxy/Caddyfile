@@ -1,0 +1,6 @@
+status.example.com {
+  reverse_proxy uptime-kuma:3001
+}
+social.example.com {
+  reverse_proxy postiz:5000
+}
