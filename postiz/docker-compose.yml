@@ -1,0 +1,35 @@
+services:
+  postiz:
+    image: ghcr.io/gitroomhq/postiz-app:latest
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - postiz_config:/config
+      - postiz_uploads:/uploads
+    depends_on: [postiz-postgres, postiz-redis]
+    networks: [proxy, internal]
+  postiz-postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postiz
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: postiz
+    volumes:
+      - postiz_pg:/var/lib/postgresql/data
+    networks: [internal]
+  postiz-redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - postiz_redis:/data
+    networks: [internal]
+volumes:
+  postiz_config:
+  postiz_uploads:
+  postiz_pg:
+  postiz_redis:
+networks:
+  proxy:
+    external: true
+  internal:
